@@ -1,30 +1,18 @@
 ### Get all movies
-GET http://localhost:3000/movies
+GET http://localhost:3000/users
 
-### Get a movie by id
-GET http://localhost:3000/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf
+### Get users by id
+GET http://localhost:3000/users/26
 
-### Get movies by genre
-GET http://localhost:3000/movies?genre=action
+### Get users by username
+GET http://localhost:3000/users/email/forcen@kvl.com
 
-### Create a movie
-POST http://localhost:3000/movies
+
+### Create a user
+PUT http://localhost:3000/users
 Content-Type: application/json
-
   {
-    "sql": "select * from movies where id = 1; DROP TABLE movies;",
-    "title": "The Godfather",
-    "year": 1994,
-    "director": "Frank Darabont",
-    "duration": 142,
-    "poster": "https://i.ebayimg.com/images/g/4goAAOSwMyBe7hnQ/s-l1200.webp",
-    "genre": ["Drama"]
-  }
-
-### Update a movie
-PATCH http://localhost:3000/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0
-Content-Type: application/json
-
-  {
-    "year": 2010
+    "username": "pablo",
+    "email":"pablo@kvl.com",
+    "password": "123456"
   }

@@ -1,94 +1,37 @@
-const express = require('express')
-const crypto = require('node:crypto')
-const moviesJSON = require('./movies.json')
-const { validateMovie, validatePartialMovie } = require('./schema/movies')
+import { userController } from './controller/user.js'
+import express from 'express'
+import cors from 'cors'
+import CryptoJS from 'crypto-js'
 
 const app = express()
+
 app.disable('x-powered-by') // Deshabilita la cabecera X-Powered-By
+app.use(cors())
 
 app.use(express.json())
 
-app.get('/', (req, res) => {
-  res.send('Hola Mundo')
-})
-
-app.get('/movies', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  const { genre } = req.query
-
-  if (genre) {
-    console.log(genre)
-    const filteredMovies = moviesJSON.filter(
-      movie => movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
-    )
-    return res.json(filteredMovies)
-  }
-  return res.json(moviesJSON)
-})
-
-app.get('/movies/:id', (req, res) => {
-  const { id } = req.params
-
-  const movie = moviesJSON.find((movie) => movie.id === id)
-  if (movie) {
-    res.json(movie)
+// metodo para login
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body
+  const user = await userController.searchUsers(email, CryptoJS.SHA512(password).toString())
+  if (user.length === 1) {
+    // devoler usuario
+    res.status(200).json({ message: 'Usuario autenticado', user })
   } else {
-    res.status(404).json({ error: 'Movie not found' })
+    res.status(401).json({ message: 'Usuario no autenticado' })
   }
 })
 
-app.post('/movies', (req, res) => {
-  // const { title, year, director, duration, poster, genre, rate } = req.body
+app.put('/user', async (req, res) => {
+  const { username, email, password } = req.body
+  // console.log(username, email, password)
 
-  const result = validateMovie(req.body)
-
-  if (result.error) {
-    return res.status(400).json({
-      error: JSON.parse(result.error.message)
-    })
-  }
-
-  const newMovie = {
-    id: crypto.randomUUID(),
-    ...result.data
-  }
-
-  //! Esto no es ApiRest
-  moviesJSON.push(newMovie)
-
-  res.status(201).json(newMovie)
+  const user = await userController.register(username, email, CryptoJS.SHA512(password).toString())
+  console.log(user)
+  return user
 })
 
-app.patch('/movies/:id', (req, res) => {
-  // -- Validamos lo que llega en el body
-  const result = validatePartialMovie(req.body)
-
-  if (result.error) {
-    return res.status(400).json({
-      error: JSON.parse(result.error.message)
-    })
-  }
-
-  // ? Existe la pelicula que queremos actualziar?
-  const { id } = req.params
-  const movieIndex = moviesJSON.findIndex((movie) => movie.id === id)
-
-  if (movieIndex === -1) {
-    return res.status(404).json({ error: 'Movie not found' })
-  }
-
-  //* Actualizacion de la pelicula
-  const updatedMovie = {
-    ...moviesJSON[movieIndex],
-    ...result.data
-  }
-  console.log(movieIndex)
-  moviesJSON[movieIndex] = updatedMovie
-
-  return res.json(updatedMovie)
-})
-
-const PORT = process.env.PORT ?? 3000
+const PORT = process.env.PORT ?? 3002
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto  http://localhost:${PORT}`)
