@@ -25,9 +25,8 @@ app.post('/login', async (req, res) => {
 app.put('/user', async (req, res) => {
   const { username, email, password } = req.body
   // console.log(username, email, password)
-
   const user = await userController.register(username, email, CryptoJS.SHA512(password).toString())
-  console.log(user)
+  // console.log(user)
   return user
 })
 

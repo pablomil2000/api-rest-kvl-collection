@@ -7,7 +7,15 @@ export class userModel {
   }
 
   static async findByField (fieldName, fieldValue) {
-    return await db.query('SELECT * FROM users WHERE ?? = ?', [fieldName, fieldValue])
+    return await db.query('SELECT * FROM users WHERE ? like ?', [fieldName, fieldValue])
+  }
+
+  static async findByUsername (username) {
+    return await db.query('SELECT * FROM users WHERE username like ?', [username])
+  }
+
+  static async findByEmail (email) {
+    return await db.query('SELECT * FROM users WHERE email like ?', [email])
   }
 
   static async findByEmailAndPassword (email, password) {
@@ -15,6 +23,6 @@ export class userModel {
   }
 
   static async create (username, email, password) {
-    return { message: 'patata' }
+    return await db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, password])
   }
 }

@@ -18,12 +18,14 @@ export class userController {
 
   static async register (username, email, password) {
     // comprobar existe usuario o email
-    const user = await userModel.findByField('username', username)
-    const userEmail = await userModel.findByField('email', email)
-    console.log(user[0] !== undefined)
-    if (user[0] !== undefined) {
+    // console.log(username, email, password)
+    const user = await userModel.findByUsername(username)
+    const userEmail = await userModel.findByEmail(email)
+
+    if (user[0][0] === undefined && userEmail[0][0] === undefined) {
       const user = await userModel.create(username, email, password)
-      return user
+      return user[0].insertId
+      // return 33
     }
     return false
   }
