@@ -27,11 +27,15 @@ app.put('/user', async (req, res) => {
   // console.log(username, email, password)
   const user = await userController.register(username, email, CryptoJS.SHA512(password).toString())
   // console.log(user)
-  return user
+  if (!user) {
+    res.status(400).json({ message: 'Usuario no registrado' })
+  } else {
+    res.status(201).json({ message: 'Usuario registrado' })
+  }
 })
 
 const PORT = process.env.PORT ?? 3002
 
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto  http://localhost:${PORT}`)
+  console.log(`API Runing: http://localhost:${PORT}`)
 })
