@@ -1,4 +1,5 @@
 import { userController } from './controller/user.js'
+import { plataformasController } from './controller/plataformasController.js'
 import express from 'express'
 import cors from 'cors'
 import CryptoJS from 'crypto-js'
@@ -22,6 +23,7 @@ app.post('/login', async (req, res) => {
   }
 })
 
+// metodo para registro
 app.put('/user', async (req, res) => {
   const { username, email, password } = req.body
   // console.log(username, email, password)
@@ -32,6 +34,11 @@ app.put('/user', async (req, res) => {
   } else {
     res.status(201).json({ message: 'Usuario registrado' })
   }
+})
+
+app.get('/plataformas/:limit?', async (req, res) => {
+  const plataformas = await plataformasController.getPlataformas(req.params.limit)
+  res.status(200).json(plataformas)
 })
 
 const PORT = process.env.PORT ?? 3002

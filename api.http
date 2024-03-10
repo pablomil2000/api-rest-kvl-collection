@@ -1,18 +1,11 @@
-### Get all movies
-GET http://localhost:3000/users
-
-### Get users by id
-GET http://localhost:3000/users/26
-
-### Get users by username
-GET http://localhost:3000/users/email/forcen@kvl.com
-
-
 ### Create a user
-PUT http://localhost:3000/users
+PUT http://localhost:3002/users
 Content-Type: application/json
   {
     "username": "pablo",
     "email":"pablo@kvl.com",
     "password": "123456"
   }
+
+### Get plataformas
+GET http://localhost:3002/plataformas
